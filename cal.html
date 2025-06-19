@@ -96,18 +96,51 @@
       document.getElementById('display').value = '';
     }
 
+    function add(a, b) {
+      return a + b;
+    }
+
+    function subtract(a, b) {
+      return a - b;
+    }
+
     function calculate() {
       const display = document.getElementById('display');
-      try {
-        // Allow only + and - operations
-        if (/[^0-9+\-.\s]/.test(display.value)) {
-          display.value = "Invalid Input";
-        } else {
-          display.value = eval(display.value);
-        }
-      } catch {
-        display.value = "Error";
+      const expression = display.value;
+
+      // Validate expression only contains numbers, +, -, and .
+      if (!/^[0-9.+\- ]+$/.test(expression)) {
+        display.value = "Invalid Input";
+        return;
       }
+
+      // Split numbers and operators
+      const tokens = expression.match(/[\d.]+|[+-]/g);
+
+      if (!tokens) {
+        display.value = "Error";
+        return;
+      }
+
+      let result = parseFloat(tokens[0]);
+
+      for (let i = 1; i < tokens.length; i += 2) {
+        const operator = tokens[i];
+        const nextNumber = parseFloat(tokens[i + 1]);
+
+        if (isNaN(nextNumber)) {
+          display.value = "Error";
+          return;
+        }
+
+        if (operator === '+') {
+          result = add(result, nextNumber);
+        } else if (operator === '-') {
+          result = subtract(result, nextNumber);
+        }
+      }
+
+      display.value = result;
     }
   </script>
 </body>
